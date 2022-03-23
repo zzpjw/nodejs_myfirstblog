@@ -21,10 +21,11 @@ app.engine('html', require('ejs').renderFile)
 app.use(express.json());
 app.use(express.urlencoded({extended : false})); //아악코드 html을 통해서 넘겨줄 경우에 해석에 필요
 app.use("/blog", [boardsRouter]);
+
 //
-// app.get("/", function (req, res){
-//     res.render("index");
-// });
+app.get("/", function (req, res){
+    res.redirect("/blog");
+});
 
 
 app.listen(port, () => {
