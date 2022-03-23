@@ -8,7 +8,7 @@ const router = require("express").Router();
 
 //글 목록
 router.get("/", async (req, res) => {
-    const boardsList = await Boards.find();
+    const boardsList = await Boards.find().sort({createDate: -1});
     res.status(200).render('index', {boardsList})
 });
 
