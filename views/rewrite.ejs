@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <title>나의 블로그</title>
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .mypic {
+            width: 100%;
+            height: 200px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1601024445121-e5b82f020549?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80');
+            background-position: center;
+            background-size: cover;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mypic > h1 {
+            font-size: 30px;
+        }
+
+        .mybox {
+            width: 95%;
+            max-width: 700px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px lightblue;
+            margin: 20px auto;
+        }
+
+        .mybucket > input {
+            width: 70%;
+        }
+    </style>
+    <script>
+        function putContent() {
+            const title_give = $('#title').val();
+            const username_give = $('#username').val();
+            const password_give = $('#password').val();
+            const content_give = $('#content').val();
+            console.log(title_give, username_give, password_give, content_give)
+
+            $.ajax({
+                type: "PUT",
+                url: "/blog/<%= posting.boardIdx %>/rewrite",
+                data: {
+                    'title': title_give,
+                    'content': content_give,
+                    'username': username_give,
+                    'password': password_give
+                },
+                success: function (response) {
+                    console.log(response);
+                    window.location.href = '/blog'
+                }
+            });
+        }
+
+        function deleteContent() {
+            let password = $('#password').val();
+            console.log(password)
+            $.ajax({
+                type: "DELETE",
+                url: "/blog/<%= posting.boardIdx %>/rewrite",
+                data: {
+                    "password": password
+                },
+
+                success: function (response) {
+                    console.log(response);
+                    window.location.href = '/blog'
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+<div class="mypic">
+    <h1 onclick="window.location.href = '/blog'">나의 블로그</h1>
+</div>
+<div class="mybox">
+    <input type="text" id="username" value="<%= posting.username %>">
+    <input type="password" placeholder="비밀번호" id="password">
+</div>
+<div class="mybox">
+    <input class="form-control" type="text" id="title" value="<%= posting.title %>">
+    <textarea class="form-control" id="content" rows="3"><%= posting.content %></textarea>
+</div>
+<div class="mybox">
+
+    <button type="button" class="btn btn-outline-primary" onclick="putContent()">수정완료</button>
+    <button type="button" class="btn btn-outline-primary" onclick="deleteContent()">삭제하기</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,2 @@
+#node_modules 이름을 가진 폴더는 깃에 올리지 않음
+node_modules
