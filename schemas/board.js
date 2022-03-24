@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+//password hashing module
+const crypto = require('crypto');
+
 
 const boardsSchema = mongoose.Schema({
     boardIdx: {
@@ -13,6 +16,10 @@ const boardsSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
+    },
+    salt: {
+        type: String,
+        require:true,
     },
     title: {
         type: String,

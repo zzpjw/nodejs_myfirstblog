@@ -1,6 +1,29 @@
-
 const Boards = require("../schemas/board");
 const router = require("express").Router();
+
+//password hashing module
+const crypto = require('crypto');
+const {scryptSync} = require("crypto");
+//Crypto 모듈의 randomBytes 메소드를 통해 salt를 반환하는 함수
+const createSalt = () =>
+    new Promise((resolve, reject) => {
+        crypto.randomBytes(64, (err, buf) => {
+            if (err) reject(err);
+            resolve(buf.toString('base64'));
+        });
+    });
+
+
+//salt를 사용해서 들어온 password를 암호화해서
+const createHashedPassword = (plainPassword) =>
+    new Promise(async (resolve, reject) => {
+        const salt = await createSalt();
+        crypto.pbkdf2(plainPassword, salt, 9999, 64, 'sha512', (err, key) => {
+            if (err) reject(err);
+            resolve({hashPassword: key.toString('base64'), salt});
+        });
+    });
+
 
 // req, res 서버의 입장에서 생각!
 // request 모두 프론트 쪽에서 넘어온 것(유저의 행위는 모두 request)
@@ -14,63 +37,85 @@ router.get("/", async (req, res) => {
 
 //글 작성 페이지
 router.post("/posting", async (req, res) => {
-    const { title, username, password, content } = req.body;
-    const date = Date.now()
-    console.log(title, username, password, content)
+    const {title, username, password, content} = req.body;
+    //hashing 적용하기
+    const {hashPassword, salt} = await createHashedPassword(password);
 
+    const date = Date.now()
+    console.log(title, username, hashPassword, salt, content, date)
+    //boards 최신순 정렬
     const maxIndexByBoardIdx = await Boards.findOne().sort('-boardIdx').exec();
     console.log("maxIndexByBoardIdx", maxIndexByBoardIdx)
+    //기존 boardIdx 값이 삭제되더라도 unique 값일 수 있도록
     const maxBoardIdx = maxIndexByBoardIdx ? maxIndexByBoardIdx.boardIdx + 1 : 1;
     console.log("maxBoardIdx", maxBoardIdx)
     await Boards.create({
         title,
         username,
-        password,
+        password: hashPassword,
+        salt,
         content,
         createDate: date,
         boardIdx: maxBoardIdx,
     });
 
-    res.status(200).json({ result: "success" })
+    res.status(200).json({result: "success"})
 });
 
 //글쓰기 페이지
-router.get("/posting", async (req, res)=>{
+router.get("/posting", async (req, res) => {
     res.status(200).render('posting')
 });
 
 //글 상세 조회
-router.get("/:boardIdx", async (req, res)=>{
-    const { boardIdx } = req.params;
-    console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
+router.get("/:boardIdx", async (req, res) => {
+    const {boardIdx} = req.params;
+    // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
-    console.log("포스팅은 잘 뽑혔나?", posting)
-    res.status(200).render('board',{posting,})
+    // console.log("포스팅은 잘 뽑혔나?", posting)
+    res.status(200).render('board', {posting,})
 });
 
 //글 상세 조회
-router.get("/:boardIdx/rewrite", async (req, res)=>{
-    const { boardIdx } = req.params;
-    console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
+router.get("/:boardIdx/rewrite", async (req, res) => {
+    const {boardIdx} = req.params;
+    // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
-    console.log("포스팅은 잘 뽑혔나?", posting)
-    res.status(200).render('rewrite',{posting,})
+    // console.log("포스팅은 잘 뽑혔나?", posting)
+    res.status(200).render('rewrite', {posting,})
 });
 
 //수정하기
 router.put("/:boardIdx/rewrite", async (req, res) => {
-    const { title, username, password, content } = req.body;
-    const { boardIdx } = req.params;
-    const [existsBoard] = await Boards.find({ boardIdx: Number(boardIdx) })
-    console.log(existsBoard.password)
-    console.log("지금 수정하는거야!", boardIdx)
+    const {title, username, password, content} = req.body;
+    const {boardIdx} = req.params;
+    const [existsBoard] = await Boards.find({boardIdx: Number(boardIdx)})
+    // console.log(existsBoard.password)
+    // console.log("지금 수정하는거야!", boardIdx)
+    //hashing 적용하기
+    const { rewritePassword } = await createHashedPassword(password);
+
+    //기존 경로에 맞는 DB의 salt를 가져와서 입력된 plainPassword와 조합한다.
+    const makePasswordHashed = (Idx, plainPassword) =>
+        new Promise(async (resolve, reject) => {
+            // salt를 가져오는 부분은 각자의 DB에 따라 수정
+
+            crypto.pbkdf2(plainPassword, [existsBoard][0].salt, 9999, 64, 'sha512', (err, key) => {
+                if (err) reject(err);
+                resolve(key.toString('base64'));
+            });
+        });
+    const existSalt = [existsBoard][0].salt
+    const hashPassword = await makePasswordHashed(boardIdx, password);
+
     const date = Date.now()
-    if (existsBoard && (existsBoard.password === password) ) {
-        await Boards.updateOne({ boardIdx: Number(boardIdx)}, {
+    if (existsBoard && (existsBoard.password === hashPassword)) {
+        await Boards.updateOne({boardIdx: Number(boardIdx)}, {
                 $set: {
                     title,
                     username,
-                    password,
+                    password: rewritePassword,
+                    salt: existSalt,
                     content,
                     createDate: date,
                     boardIdx: boardIdx
@@ -78,21 +123,37 @@ router.put("/:boardIdx/rewrite", async (req, res) => {
             }
         );
     }
-    res.status(200).json({ result: "success" })
+    res.status(200).json({result: "success"})
 });
 
 //삭제하기
 router.delete("/:boardIdx/rewrite", async (req, res) => {
-    const { boardIdx } = req.params;
-    console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
-    const [existsBoard] = await Boards.find({ boardIdx: Number(boardIdx) })
-    console.log("existsBoard 잘 뽑혔나?", existsBoard)
-    console.log("existsBoard.password", existsBoard.password)
-    console.log("req.body.password", req.body.password)
-    if (existsBoard && (existsBoard.password === req.body.password) ) {
-        await Boards.deleteOne({ boardIdx: Number(boardIdx) })
+    const {boardIdx} = req.params;
+    // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
+    const [existsBoard] = await Boards.find({boardIdx: Number(boardIdx)})
+    // console.log("existsBoard 잘 뽑혔나?", existsBoard)
+    // console.log("existsBoard.password", existsBoard.password)
+
+    //기존 경로에 맞는 DB의 salt를 가져와서 입력된 plainPassword와 조합한다.
+    const makePasswordHashed = (Idx, plainPassword) =>
+        new Promise(async (resolve, reject) => {
+            // salt를 가져오는 부분은 각자의 DB에 따라 수정
+
+
+            console.log([existsBoard][0].salt);
+            crypto.pbkdf2(plainPassword, [existsBoard][0].salt, 9999, 64, 'sha512', (err, key) => {
+                if (err) reject(err);
+                resolve(key.toString('base64'));
+            });
+        });
+
+    const hashPassword = await makePasswordHashed(boardIdx, req.body.password);
+
+    console.log(existsBoard.password, hashPassword);
+    if (existsBoard && (existsBoard.password === hashPassword)) {
+        await Boards.deleteOne({boardIdx: Number(boardIdx)})
     }
-    res.json({success:true});
+    res.json({success: true});
 });
 
 module.exports = router;
