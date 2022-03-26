@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +17,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-    <title>나의 블로그</title>
+    <title>나의 블로그 : 게시판</title>
 
     <style>
         * {
@@ -60,21 +63,23 @@
 
 </head>
 <body>
+
 <div class="mypic">
     <h1 onclick="window.location.href = '/blog'">나의 블로그</h1>
 </div>
 <div class="mybox">
-    <h2><%= posting.title %></h2>
-    <%= posting.username %>
-    <%= posting.createDate %>
-</div>
-<div class="mybox">
-    <%= posting.content %>
-</div>
-<div class="mybox">
     <div class="mybucket">
-        <button type="button" class="btn btn-outline-primary" onclick="window.location.href = '/blog/<%= posting.boardIdx %>/rewrite'">수정하기</button>
+        <button type="button" class="btn btn-outline-primary" onclick="window.location.href = '/blog/posting'">글쓰기</button>
     </div>
+</div>
+<div class="mybox">
+    <% for (i = 0; i < boardsList.length; i++ ){ %>
+        <ul>
+            <h2 onclick="window.location.href = '/blog/<%= boardsList[i].boardIdx %>'"><%= boardsList[i].title %></h2>
+            <%= boardsList[i].username %>
+            <%= boardsList[i].createDate %>
+        </ul>
+    <% } %>
 </div>
 </body>
 </html>
