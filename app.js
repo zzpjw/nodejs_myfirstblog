@@ -1,8 +1,6 @@
 //Imports
 const express = require("express");
 const connect = require("./models");
-const jwt = require("jsonwebtoken");
-const authMiddleware = require("./middlewares/auth-middleware");
 
 // //xss security Import 라이브러리? 사용을 해야하는가? 예외처리 방식이 복잡.. 이해가 필요할듯
 // const helmet = require("helmet");

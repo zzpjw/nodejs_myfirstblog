@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <!--bootstrap css-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <!--    bulma css-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
@@ -62,17 +60,43 @@
         }
 
     </style>
+    <script>
+        function sign_up() {
+            const nickname = $("#inputNickname").val();
+            // const email = $("#inputEmail").val();
+            const password1 = $("#inputPassword1").val();
+            const password2 = $("#inputPassword2").val();
 
+            $.ajax({
+                type: "POST",
+                url: "/register",
+                data: {
+                    nickname: nickname,
+                    // email: email,
+                    password: password1,
+                    confirmPassword: password2,
+                },
+                success: function (response) {
+                    alert("회원가입을 축하드립니다!");
+                    window.location.replace("/");
+                    ;
+                },
+                error: function (error) {
+                    alert(error.responseJSON.errorMessage);
+                },
+            });
+        }
+    </script>
 </head>
 <body>
 
 <div class="mypic">
-    <h1 onclick="window.location.href = '/index'">나의 블로그</h1>
+    <h1 onclick="window.location.href = '/'">나의 블로그</h1>
 
     <div class="mybox">
         <div class="field">
             <p class="control has-icons-left has-icons-right">
-                <input class="input" type="text" placeholder="Nickname">
+                <input class="input" type="text" id="inputNickname" placeholder="Nickname">
                 <span class="icon is-small is-left">
       <i class="fas fa-envelope"></i>
     </span>
@@ -81,20 +105,20 @@
     </span>
             </p>
         </div>
-        <div class="field">
-            <p class="control has-icons-left has-icons-right">
-                <input class="input" type="email" placeholder="Email">
-                <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                <span class="icon is-small is-right">
-      <i class="fas fa-check"></i>
-    </span>
-            </p>
-        </div>
+<!--        <div class="field">-->
+<!--            <p class="control has-icons-left has-icons-right">-->
+<!--                <input class="input" type="email" id="inputEmail" placeholder="Email">-->
+<!--                <span class="icon is-small is-left">-->
+<!--      <i class="fas fa-envelope"></i>-->
+<!--    </span>-->
+<!--                <span class="icon is-small is-right">-->
+<!--      <i class="fas fa-check"></i>-->
+<!--    </span>-->
+<!--            </p>-->
+<!--        </div>-->
         <div class="field">
             <p class="control has-icons-left">
-                <input class="input" type="password" placeholder="Password">
+                <input class="input" type="password" id="inputPassword1" placeholder="Password">
                 <span class="icon is-small is-left">
       <i class="fas fa-lock"></i>
     </span>
@@ -102,13 +126,13 @@
         </div>
         <div class="field">
             <p class="control has-icons-left">
-                <input class="input" type="password" placeholder="reconfirm password">
+                <input class="input" type="password" id="inputPassword2" placeholder="reconfirm password">
                 <span class="icon is-small is-left">
       <i class="fas fa-lock"></i>
     </span>
             </p>
         </div>
-        <button class="button is-info">회원가입</button>
+        <button class="button is-info" onclick="sign_up()">회원가입</button>
         <button class="button is-info" onclick="window.location.href = '/'">취소</button>
     </div>
 

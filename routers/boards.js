@@ -1,5 +1,6 @@
 const Boards = require("../models/board");
 const router = require("express").Router();
+const authMiddleware = require("../middlewares/auth-middleware");
 
 //password hashing module
 const crypto = require('crypto');
@@ -29,19 +30,19 @@ const createHashedPassword = (plainPassword) =>
 // response 내가 프론트로 넘겨주는 것.//
 
 //글 목록 페이지(기본)
-router.get("/", async (req, res) => {
+router.get("/" , async (req, res) => {
     //createDate를 역순으로 정렬해서 최신순 목록 정렬함
     const boardsList = await Boards.find().sort({createDate: -1});
     res.status(200).render('board', {boardsList})
 });
 
 //글 작성 페이지
-router.get("/posting", async (req, res) => {
+router.get("/posting" , async (req, res) => {
     res.status(200).render('posting')
 });
 
 //글 작성
-router.post("/posting", async (req, res) => {
+router.post("/posting" , async (req, res) => {
     const {title, username, password, content} = req.body;
     //hashing 적용하기, salt 만들기
     const {hashPassword, salt} = await createHashedPassword(password);
@@ -70,7 +71,7 @@ router.post("/posting", async (req, res) => {
 });
 
 //글 상세 조회 페이지
-router.get("/:boardIdx", async (req, res) => {
+router.get("/:boardIdx" , async (req, res) => {
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -79,7 +80,7 @@ router.get("/:boardIdx", async (req, res) => {
 });
 
 //수정하기 페이지
-router.get("/:boardIdx/rewrite", async (req, res) => {
+router.get("/:boardIdx/rewrite" , async (req, res) => {
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -88,7 +89,7 @@ router.get("/:boardIdx/rewrite", async (req, res) => {
 });
 
 //수정하기
-router.put("/:boardIdx/rewrite", async (req, res) => {
+router.put("/:boardIdx/rewrite" , async (req, res) => {
     const {title, username, password, content} = req.body;
     const {boardIdx} = req.params;
     const [existsBoard] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -134,7 +135,7 @@ router.put("/:boardIdx/rewrite", async (req, res) => {
 });
 
 //삭제하기
-router.delete("/:boardIdx/rewrite", async (req, res) => {
+router.delete("/:boardIdx/rewrite" , async (req, res) => {
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [existsBoard] = await Boards.find({boardIdx: Number(boardIdx)})
