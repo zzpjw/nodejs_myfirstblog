@@ -12,7 +12,7 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-    <title>나의 블로그</title>
+    <title>나의 블로그 : 글쓰기</title>
 
     <style>
         * {
@@ -52,6 +52,33 @@
         }
     </style>
     <script>
+        let user;
+        getSelf(function (u) {
+            user = u;
+        });
+
+        function getSelf(callback) {
+            $.ajax({
+                type: "GET",
+                url: "/users/me",
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                success: function (response) {
+                    callback(response.user);
+                },
+                error: function (xhr, status, error) {
+                    if (status == 401) {
+                        alert("로그인이 필요합니다.");
+                    } else {
+                        localStorage.clear();
+                        alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
+                    }
+                    window.location.href = "/";
+                },
+            });
+        }
+
         function postContent() {
             const title_give = $('#title').val();
             const username_give = $('#username').val();

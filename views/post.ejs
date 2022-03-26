@@ -11,25 +11,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
-    <!--    bulma css-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-    <title>나의 블로그</title>
+    <title>나의 블로그 : 게시글 <%= posting.boardIdx %></title>
 
     <style>
         * {
             font-family: 'Gowun Dodum', sans-serif;
         }
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
         .mypic {
-            border: 0;
-            padding: 0;
-            min-height: 100%;
+            width: 100%;
+            height: 200px;
 
             background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1601024445121-e5b82f020549?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80');
             background-position: center;
@@ -48,24 +41,66 @@
         .mybox {
             width: 95%;
             max-width: 700px;
-
             padding: 20px;
             box-shadow: 0px 0px 10px 0px lightblue;
             margin: 20px auto;
+        }
+        .mybucket {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-            text-align: center;
+        .mybucket > input {
+            width: 70%;
         }
 
     </style>
+    <script>
+        let user;
+        getSelf(function (u) {
+            user = u;
+        });
 
+        function getSelf(callback) {
+            $.ajax({
+                type: "GET",
+                url: "/users/me",
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                success: function (response) {
+                    callback(response.user);
+                },
+                error: function (xhr, status, error) {
+                    if (status == 401) {
+                        alert("로그인이 필요합니다.");
+                    } else {
+                        localStorage.clear();
+                        alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
+                    }
+                    window.location.href = "/";
+                },
+            });
+        }
+    </script>
 </head>
 <body>
-
 <div class="mypic">
-    <h1 onclick="window.location.href = '/'">나의 블로그</h1>
-    <div class="mybox">
-        <button class="button is-info" onclick="window.location.href = '/login'">로그인</button>
-        <button class="button is-info" onclick="window.location.href = '/register'">회원가입</button>
+    <h1 onclick="window.location.href = '/blog'">나의 블로그</h1>
+</div>
+<div class="mybox">
+    <h2><%= posting.title %></h2>
+    <%= posting.username %>
+    <%= posting.createDate %>
+</div>
+<div class="mybox">
+    <%= posting.content %>
+</div>
+<div class="mybox">
+    <div class="mybucket">
+        <button type="button" class="btn btn-outline-primary" onclick="window.location.href = '/blog/<%= posting.boardIdx %>/rewrite'">수정하기</button>
     </div>
 </div>
 </body>
