@@ -88,6 +88,11 @@
          });
      }
 
+     function signOut() {
+         localStorage.clear();
+         window.location.href = "/";
+     }
+
  </script>
 </head>
 <body>
@@ -98,6 +103,7 @@
 <div class="mybox">
     <div class="mybucket">
         <button type="button" class="btn btn-outline-primary" onclick="window.location.href = '/blog/posting'">글쓰기</button>
+        <button type="button" class="btn btn-outline-danger" onclick="signOut()">로그아웃</button>
     </div>
 </div>
 <div class="mybox">
