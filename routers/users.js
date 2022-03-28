@@ -41,13 +41,35 @@ router.get("/register", async (req, res) => {
 //회원가입
 router.post("/register", async (req, res) => {
     const {nickname, password, confirmPassword} = req.body;
-    //닉네임 입력하지 않았을 때
-    if (nickname === "") {
+    //아이디 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자 사용 가능 3~20자리
+    const regExp_nickname = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$/;
+    if (!regExp_nickname.test(nickname)) {
         res.status(400).send({
-            errorMessage: '닉네임을 입력하세요.'
+            errorMessage: '닉네임의 형식을 확인해주세요. 영문과 숫자 필수 포함, 3-20자'
         });
         return;
     }
+    // 패스워드 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자와 특수문자 사용 가능 4~20자리
+    const regExp_password = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{4,20}$/;//()안에 내용은 필수 포함//'\d'는 숫자를 의미함//
+    if (!regExp_password.test(password)) {
+        res.status(400).send({
+            errorMessage: '비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용 가능 4-20자'
+        });
+        return;
+    }
+    if (password.match(nickname)) {
+        res.status(400).send({
+            errorMessage: '비밀번호에 닉네임을 포함할 수 없습니다.'
+        });
+        return;
+    }
+    // //닉네임 입력하지 않았을 때
+    // if (nickname === "") {
+    //     res.status(400).send({
+    //         errorMessage: '닉네임을 입력하세요.'
+    //     });
+    //     return;
+    // }
     //nickname 중복 확인
     const existUsers = await User.find({
         nickname,
@@ -58,13 +80,13 @@ router.post("/register", async (req, res) => {
         });
         return;
     }
-    //패스워드 입력하지 않았을 때
-    if (password === "") {
-        res.status(400).send({
-            errorMessage: '패스워드를 입력하세요.'
-        });
-        return;
-    }
+    // //패스워드 입력하지 않았을 때
+    // if (password === "") {
+    //     res.status(400).send({
+    //         errorMessage: '패스워드를 입력하세요.'
+    //     });
+    //     return;
+    // }
     //패스워드 확인
     if (password !== confirmPassword) {
         res.status(400).send({
@@ -74,14 +96,14 @@ router.post("/register", async (req, res) => {
     }
     //hashing 적용하기, salt 만들기
     const {hashPassword, salt} = await createHashedPassword(password);
-    console.log("hashPassword, salt", hashPassword, salt)
+    // console.log("hashPassword, salt", hashPassword, salt)
     //새로운 user 객체 만들기
     const user = new User({
         nickname,
         password: hashPassword,
         salt,
     });
-    console.log("user", user)
+    // console.log("user", user)
     await user.save();
 
     res.status(201).send({});
@@ -95,7 +117,22 @@ router.get("/login", async (req, res) => {
 //로그인
 router.post("/auth", async (req, res) => {
     const { nickname, password } = req.body;
-
+    // //아이디 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자 사용 가능 3~20자리
+    // const regExp_nickname = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$/;
+    // if (!regExp_nickname.test(nickname)) {
+    //     res.status(400).send({
+    //         errorMessage: '닉네임의 형식을 확인해주세요. 영문과 숫자 필수 포함, 3-20자'
+    //     });
+    //     return;
+    // }
+    // // 패스워드 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자와 특수문자 사용 가능 4~20자리
+    // const regExp_password = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{4,20}$/;//()안에 내용은 필수 포함//'\d'는 숫자를 의미함//
+    // if (!regExp_password.test(password)) {
+    //     res.status(400).send({
+    //         errorMessage: '비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용 가능 4-20자'
+    //     });
+    //     return;
+    // }
     //닉네임 입력하지 않았을 때
     if (nickname === "") {
         res.status(400).send({
@@ -110,7 +147,6 @@ router.post("/auth", async (req, res) => {
         });
         return;
     }
-
     const [existsUser] = await User.find({nickname})
     // console.log([existsUser])
     if (existsUser === undefined) {
@@ -119,8 +155,6 @@ router.post("/auth", async (req, res) => {
         });
         return;
     }
-
-
     //기존 경로에 맞는 DB의 salt를 가져와서 입력된 plainPassword와 조합하는 함수
     const makePasswordHashed = (plainNickname, plainPassword) =>
         new Promise(async (resolve, reject) => {
@@ -133,7 +167,6 @@ router.post("/auth", async (req, res) => {
                 resolve(key.toString('base64'));
             });
         });
-
     //해시화 함수 사용
     const hashPassword = await makePasswordHashed(nickname, password);
     // console.log(password, hashPassword)
@@ -152,7 +185,6 @@ router.post("/auth", async (req, res) => {
     res.send({
         token,
     });
-
 });
 
 //핸들러 앞에 authMiddleware를 붙이지 않으면 문제가 발생함.
