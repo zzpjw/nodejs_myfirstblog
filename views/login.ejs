@@ -15,6 +15,10 @@
     <!--    bulma css-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <script src="https://use.fontawesome.com/9ff1ba6f6c.js"></script>
+    <script src="https://use.fontawesome.com/9ff1ba6f6c.js"></script>
+    <!--  font awesome  -->
+    <script src="https://kit.fontawesome.com/182e20a94b.js" crossorigin="anonymous"></script>
 
     <title>나의 블로그 : 로그인</title>
 
@@ -92,24 +96,18 @@
     <h1 onclick="window.location.href = '/'">나의 블로그</h1>
 
     <div class="mybox">
-
         <div class="field">
             <p class="control has-icons-left has-icons-right">
-                <input class="input" type="text" id="inputNickname" placeholder="Email">
-                <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                <span class="icon is-small is-right">
-      <i class="fas fa-check"></i>
-    </span>
+                <input class="input" type="text" id="inputNickname" placeholder="Nickname">
+                <span class="icon is-small is-left"><i class="fa-solid fa-image-portrait"></i></span>
+                <span class="icon is-small is-right"><i class="fas fa-check"></i></span>
             </p>
         </div>
         <div class="field">
-            <p class="control has-icons-left">
-                <input class="input" type="password" id="inputPassword" placeholder="Password">
-                <span class="icon is-small is-left">
-      <i class="fas fa-lock"></i>
-    </span>
+            <p class="control has-icons-left has-icons-right">
+                <input class="input" type="password" id="inputPassword" placeholder="password">
+                <span class="icon is-small is-left"><i class="fas fa-lock"></i></span>
+                <span class="icon is-small is-right"><i class="fas fa-check"></i></span>
             </p>
         </div>
         <button class="button is-info" onclick="sign_in()">로그인</button>

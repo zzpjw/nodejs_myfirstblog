@@ -12,6 +12,8 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <!--  font awesome  -->
+    <script src="https://kit.fontawesome.com/182e20a94b.js" crossorigin="anonymous"></script>
     <title>나의 블로그 : 글쓰기</title>
 
     <style>
@@ -45,6 +47,9 @@
             padding: 20px;
             box-shadow: 0px 0px 10px 0px lightblue;
             margin: 20px auto;
+
+            word-break: break-word;
+            overflow: auto;
         }
 
         .mybucket > input {
@@ -78,26 +83,27 @@
                 },
             });
         }
-
+        //글 작성
         function postContent() {
             const title_give = $('#title').val();
-            const username_give = $('#username').val();
-            const password_give = $('#password').val();
             const content_give = $('#content').val();
-            console.log(title_give, username_give, password_give, content_give)
-
+            console.log(title_give, /*username_give, password_give,*/ content_give)
             $.ajax({
                 type: "POST",
                 url: "/blog/posting",
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
                 data: {
                     'title': title_give,
                     'content': content_give,
-                    'username': username_give,
-                    'password': password_give
                 },
                 success: function (response) {
                     console.log(response);
                     window.location.href = '/blog'
+                },
+                error: function (error) {
+                    alert(error.responseJSON.errorMessage);
                 }
             });
         }
@@ -109,8 +115,7 @@
     <h1 onclick="window.location.href = '/blog'">나의 블로그</h1>
 </div>
 <div class="mybox">
-    <input type="text" placeholder="글쓴이" id="username">
-    <input type="password" placeholder="비밀번호" id="password">
+    <span></span>
 </div>
 <div class="mybox">
     <input class="form-control" type="text" id="title" placeholder="제목을 입력하세요">

@@ -13,7 +13,8 @@
     <!--    bulma css-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-
+    <!--  font awesome  -->
+    <script src="https://kit.fontawesome.com/182e20a94b.js" crossorigin="anonymous"></script>
     <title>나의 블로그 : 회원가입</title>
 
     <style>
@@ -97,12 +98,8 @@
         <div class="field">
             <p class="control has-icons-left has-icons-right">
                 <input class="input" type="text" id="inputNickname" placeholder="Nickname">
-                <span class="icon is-small is-left">
-      <i class="fas fa-envelope"></i>
-    </span>
-                <span class="icon is-small is-right">
-      <i class="fas fa-check"></i>
-    </span>
+                <span class="icon is-small is-left"><i class="fa-solid fa-image-portrait"></i></span>
+                <span class="icon is-small is-right"><i class="fas fa-check"></i></span>
             </p>
         </div>
 <!--        <div class="field">-->
@@ -117,19 +114,17 @@
 <!--            </p>-->
 <!--        </div>-->
         <div class="field">
-            <p class="control has-icons-left">
+            <p class="control has-icons-left has-icons-right">
                 <input class="input" type="password" id="inputPassword1" placeholder="Password">
-                <span class="icon is-small is-left">
-      <i class="fas fa-lock"></i>
-    </span>
+                <span class="icon is-small is-left"><i class="fas fa-lock"></i></span>
+                <span class="icon is-small is-right"><i class="fas fa-check"></i></span>
             </p>
         </div>
         <div class="field">
-            <p class="control has-icons-left">
+            <p class="control has-icons-left has-icons-right">
                 <input class="input" type="password" id="inputPassword2" placeholder="reconfirm password">
-                <span class="icon is-small is-left">
-      <i class="fas fa-lock"></i>
-    </span>
+                <span class="icon is-small is-left"><i class="fas fa-lock"></i></span>
+                <span class="icon is-small is-right"><i class="fas fa-check"></i></span>
             </p>
         </div>
         <button class="button is-info" onclick="sign_up()">회원가입</button>

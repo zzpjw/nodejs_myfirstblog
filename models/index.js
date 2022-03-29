@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 //DB 연결 (app.js에서 connect 함수가 실행되면 -->)
 const connect = () => {
     //mongoose를 통해서 mongodb 연결, undefined가 뜬다면 무시함.
-    mongoose.connect("mongodb://localhost:27017/blogProject", { ignoreUndefined: true }).catch((err) => {
+    mongoose.connect("mongodb://localhost:27017/blogTest", { ignoreUndefined: true }).catch((err) => {
         console.log(err);
     });
 };
