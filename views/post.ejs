@@ -63,11 +63,13 @@
     </style>
     <script>
         $(document).ready(function(){
-            // $('.isUser').hide();
+            $('.isUser').hide();
             $('.isMyPost').hide();
+
             <% for (i = 0; i < commentsList.length; i++ ){ %>
             $('.isMyComment<%= commentsList[i].commentIdx %>').hide();
             <% } %>
+
             if (localStorage.length !== 0){
                 let user;
                 getSelf(function (u) {
@@ -157,11 +159,18 @@
                 });
             }
         }
+        function modifyCommentShow(commentIdx){
+            $(`.isUser${commentIdx}`).show();
+            $(`.hideButton`).hide();
+            $(`.hideComment${commentIdx}`).hide();
 
+
+        }
         //댓글 수정
         function modifyComment(commentIdx) {
+            $(`#hideComment${commentIdx}`).hide();
 
-            const comment_give = $('#comment').val();
+            const comment_give = $(`#modifyComment${commentIdx}`).val();
             if (!comment_give) {
                 alert("댓글 내용이 존재하지 않습니다.")
                 return;
@@ -210,14 +219,16 @@
         <tbody>
         <% for (i = 0; i < commentsList.length; i++ ){ %>
             <tr>
-                <td class="align-baseline" id="<%= commentsList[i].username %>"><%= commentsList[i].username %></td>
-                <td class="align-baseline"><%= commentsList[i].comment %></td>
+                <td class="align-baseline" id="hideComment<%= commentsList[i].username %>"><%= commentsList[i].username %></td>
+                <td class="align-baseline hideComment<%= commentsList[i].commentIdx %>"><%= commentsList[i].comment %></td>
+                <td class="isUser isUser<%= commentsList[i].commentIdx %>"><input class="form-control" id="modifyComment<%= commentsList[i].commentIdx %>" type="text" aria-label="default input example"></td>
                 <td class="icon has-icons-right is-right">
 
                     <div class="isMyComment<%= commentsList[i].commentIdx %>">
                         <span class="has-icons-right" id="basic-addon2">
-                        <i class="fa fa-pencil" aria-hidden="true" onclick="modifyComment(<%= commentsList[i].commentIdx %>)"></i>
-                        <i class="fa fa-times" aria-hidden="true" onclick="deleteComment(<%= commentsList[i].commentIdx %>)"></i>
+                            <i class="fa fa-pencil hideButton" aria-hidden="true" onclick="modifyCommentShow(<%= commentsList[i].commentIdx %>)"></i>
+                            <i class="fa fa-pencil isUser isUser<%= commentsList[i].commentIdx %>" aria-hidden="true" onclick="modifyComment(<%= commentsList[i].commentIdx %>)"></i>
+                            <i class="fa fa-times hideButton" aria-hidden="true" onclick="deleteComment(<%= commentsList[i].commentIdx %>)"></i>
                         </span>
                     </div>
 
