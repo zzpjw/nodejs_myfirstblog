@@ -221,7 +221,7 @@
             <tr>
                 <td class="align-baseline" id="hideComment<%= commentsList[i].username %>"><%= commentsList[i].username %></td>
                 <td class="align-baseline hideComment<%= commentsList[i].commentIdx %>"><%= commentsList[i].comment %></td>
-                <td class="isUser isUser<%= commentsList[i].commentIdx %>"><input class="form-control" id="modifyComment<%= commentsList[i].commentIdx %>" type="text" aria-label="default input example"></td>
+                <td class="isUser isUser<%= commentsList[i].commentIdx %>"><input class="form-control" id="modifyComment<%= commentsList[i].commentIdx %>" type="text" aria-label="default input example" placeholder="<%= commentsList[i].comment %>"></td>
                 <td class="icon has-icons-right is-right">
 
                     <div class="isMyComment<%= commentsList[i].commentIdx %>">
