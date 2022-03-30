@@ -64,10 +64,18 @@
 
     </style>
  <script>
-     let user;
-     getSelf(function (u) {
-         user = u;
-     });
+     $(document).ready(function(){
+         $('.isUser').hide();
+         $('.isNotUser').show();
+
+
+         if (localStorage.length !== 0){
+             let user;
+             getSelf(function (u) {
+                 user = u;
+             });
+         }
+     })
 
      function getSelf(callback) {
          $.ajax({
@@ -77,6 +85,8 @@
                  authorization: `Bearer ${localStorage.getItem("token")}`,
              },
              success: function (response) {
+                 $('.isUser').show();
+                 $('.isNotUser').hide();
                  callback(response.user);
              },
              error: function (xhr, status, error) {
@@ -93,7 +103,7 @@
 
      function signOut() {
          localStorage.clear();
-         window.location.href = "/";
+         window.location.href = "/blog";
      }
 
  </script>
@@ -105,8 +115,9 @@
 </div>
 <div class="mybox">
     <div class="mybucket">
-        <button type="button" class="btn btn-outline-primary" onclick="window.location.href = '/blog/posting'">글쓰기</button>
-        <button type="button" class="btn btn-outline-danger" onclick="signOut()">로그아웃</button>
+        <button type="button" class="btn btn-outline-primary isUser" onclick="window.location.href = '/blog/posting'">글쓰기</button>
+        <button type="button" class="btn btn-outline-danger isUser" onclick="signOut()">로그아웃</button>
+        <button type="button" class="btn btn-outline-primary isNotUser" onclick="window.location.href = '/login'">로그인</button>
     </div>
 </div>
 <div class="mybox">

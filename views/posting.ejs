@@ -57,10 +57,14 @@
         }
     </style>
     <script>
-        let user;
-        getSelf(function (u) {
-            user = u;
-        });
+        $(document).ready(function(){
+            if (localStorage.length !== 0){
+                let user;
+                getSelf(function (u) {
+                    user = u;
+                });
+            }
+        })
 
         function getSelf(callback) {
             $.ajax({
@@ -87,7 +91,6 @@
         function postContent() {
             const title_give = $('#title').val();
             const content_give = $('#content').val();
-            console.log(title_give, /*username_give, password_give,*/ content_give)
             $.ajax({
                 type: "POST",
                 url: "/blog/posting",

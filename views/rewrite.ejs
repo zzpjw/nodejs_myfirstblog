@@ -54,10 +54,16 @@
         }
     </style>
     <script>
-        let user;
-        getSelf(function (u) {
-            user = u;
-        });
+        $(document).ready(function(){
+
+            if (localStorage.length !== 0){
+                let user;
+                getSelf(function (u) {
+                    user = u;
+
+                });
+            }
+        })
 
         function getSelf(callback) {
             $.ajax({
