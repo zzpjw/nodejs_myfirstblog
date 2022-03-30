@@ -89,13 +89,12 @@
         function getSelf(callback) {
             $.ajax({
                 type: "GET",
-                url: "/users/me",
+                url: "/login/users/me",
                 headers: {
                     authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 success: function (response) {
                     // alert(localStorage.getItem("token"))
-                    // $('.isUser').show();
 
                     callback(response.user);
                 },
@@ -106,14 +105,13 @@
                         localStorage.clear();
                         alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
                     }
-                    window.location.href = "/";
+                    window.location.href = "/login/basic";
                 },
             });
         }
 
         function writeComment() {
             const comment_give = $('#comment').val();
-            console.log(comment_give)
 
             $.ajax({
                 type: "POST",
@@ -125,7 +123,6 @@
                     'comment': comment_give,
                 },
                 success: function (response) {
-                    console.log(response);
                     location.href = location.href
                 },
                 error: function (error) {
@@ -138,30 +135,9 @@
         function loginCheck() {
             if (!localStorage.getItem("token")) {
                 alert("로그인이 필요한 기능입니다.")
-                location.href = "/login"
+                location.href = "/login/auth"
             }
         }
-
-
-        function modifyCommentShow(commentIdx) {
-            <!--$(`#<%#= commentsList[i].username %>canModify`).show()-->
-        }
-        // function modifyCommentShow(commentId) {
-        //     $(`#comment${commentId}`).hide()
-        //     $(`#commentIcon${commentId}`).hide()
-        //
-        //     $(`#commentDiv${commentId}`).show()
-        //
-        //     const commentText = $(`#comment${commentId}`).text().trim();
-        //     $(`#commentInput${commentId}`).val(commentText)
-        // }
-        //
-        // function modifyCommentHide(commentId) {
-        //     $(`#comment${commentId}`).show()
-        //     $(`#commentIcon${commentId}`).show()
-        //
-        //     $(`#commentDiv${commentId}`).hide()
-        // }
 
         //댓글 삭제 성공
         function deleteComment(commentIdx) {

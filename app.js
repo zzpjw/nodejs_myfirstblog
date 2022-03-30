@@ -24,17 +24,17 @@ app.set("views", __dirname+ "/views" )
 //default
 app.use(express.json());
 app.use(express.urlencoded({extended : false})); //아악코드 html을 통해서 서버로 넘겨줄 경우때 해석에 필요
-app.use("/", [usersRouter]);
+app.use("/login", [usersRouter]);
 app.use("/blog", [boardsRouter]);
 
 
 // //xss security use
 // app.use(helmet({contentSecurityPolicy: false}));
 
-// //기본 ip주소로 들어오면 /blog로 바로 연결
-// app.get("/", function (req, res){
-//     res.redirect("/blog");
-// });
+//기본 ip주소로 들어오면 /blog로 바로 연결
+app.get("/", function (req, res){
+    res.redirect("/blog");
+});
 
 //http 서버 실행
 app.listen(port, () => {

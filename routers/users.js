@@ -27,7 +27,7 @@ const createHashedPassword = (plainPassword) =>
     });
 
 //기본 페이지
-router.get("/", async (req, res) => {
+router.get("/basic", async (req, res) => {
     res.status(200).render('index', )
 });
 
@@ -109,7 +109,7 @@ router.post("/register", async (req, res) => {
 })
 
 //로그인 페이지
-router.get("/login", async (req, res) => {
+router.get("/auth", async (req, res) => {
     res.status(200).render('login', )
 });
 
