@@ -1,7 +1,6 @@
-const Boards = require("../models/board");
 const router = require("express").Router();
 const authMiddleware = require("../middlewares/auth-middleware");
-const User = require("../models/user");
+const Users = require("../models/user");
 const jwt = require("jsonwebtoken");
 
 //password hashing module
@@ -71,7 +70,7 @@ router.post("/register", async (req, res) => {
     //     return;
     // }
     //nickname 중복 확인
-    const existUsers = await User.find({
+    const existUsers = await Users.find({
         nickname,
     });
     if (existUsers.length) {
@@ -98,7 +97,7 @@ router.post("/register", async (req, res) => {
     const {hashPassword, salt} = await createHashedPassword(password);
     // console.log("hashPassword, salt", hashPassword, salt)
     //새로운 user 객체 만들기
-    const user = new User({
+    const user = new Users({
         nickname,
         password: hashPassword,
         salt,
@@ -147,7 +146,7 @@ router.post("/auth", async (req, res) => {
         });
         return;
     }
-    const [existsUser] = await User.find({nickname})
+    const [existsUser] = await Users.find({nickname})
     // console.log([existsUser])
     if (existsUser === undefined) {
         res.status(400).send({
@@ -170,7 +169,7 @@ router.post("/auth", async (req, res) => {
     //해시화 함수 사용
     const hashPassword = await makePasswordHashed(nickname, password);
     // console.log(password, hashPassword)
-    const user = await User.findOne({ nickname, password: hashPassword }).exec();
+    const user = await Users.findOne({ nickname, password: hashPassword }).exec();
     // console.log(user)
     if (!user) {
         res.status(400).send({
