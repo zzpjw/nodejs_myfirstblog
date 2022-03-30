@@ -62,13 +62,6 @@ router.post("/register", async (req, res) => {
         });
         return;
     }
-    // //닉네임 입력하지 않았을 때
-    // if (nickname === "") {
-    //     res.status(400).send({
-    //         errorMessage: '닉네임을 입력하세요.'
-    //     });
-    //     return;
-    // }
     //nickname 중복 확인
     const existUsers = await Users.find({
         nickname,
@@ -79,13 +72,6 @@ router.post("/register", async (req, res) => {
         });
         return;
     }
-    // //패스워드 입력하지 않았을 때
-    // if (password === "") {
-    //     res.status(400).send({
-    //         errorMessage: '패스워드를 입력하세요.'
-    //     });
-    //     return;
-    // }
     //패스워드 확인
     if (password !== confirmPassword) {
         res.status(400).send({
@@ -116,22 +102,6 @@ router.get("/auth", async (req, res) => {
 //로그인
 router.post("/auth", async (req, res) => {
     const { nickname, password } = req.body;
-    // //아이디 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자 사용 가능 3~20자리
-    // const regExp_nickname = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$/;
-    // if (!regExp_nickname.test(nickname)) {
-    //     res.status(400).send({
-    //         errorMessage: '닉네임의 형식을 확인해주세요. 영문과 숫자 필수 포함, 3-20자'
-    //     });
-    //     return;
-    // }
-    // // 패스워드 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자와 특수문자 사용 가능 4~20자리
-    // const regExp_password = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{4,20}$/;//()안에 내용은 필수 포함//'\d'는 숫자를 의미함//
-    // if (!regExp_password.test(password)) {
-    //     res.status(400).send({
-    //         errorMessage: '비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용 가능 4-20자'
-    //     });
-    //     return;
-    // }
     //닉네임 입력하지 않았을 때
     if (nickname === "") {
         res.status(400).send({
@@ -178,8 +148,8 @@ router.post("/auth", async (req, res) => {
         return;
     }
     // console.log("userId", user.userId)
-    //*************************************************시크릿 키 바꾸기*******************
-    const token = jwt.sign({ userId: user.userId }, "my-secret-key");
+
+    const token = jwt.sign({ userId: user.userId }, process.env.SECRET_KEY);
     // console.log(token)
     res.send({
         token,

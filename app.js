@@ -1,3 +1,5 @@
+//dotenv 키값 보안
+require('dotenv').config();
 //Imports
 const express = require("express");
 const connect = require("./models");
