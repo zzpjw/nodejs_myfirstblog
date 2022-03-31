@@ -20,7 +20,7 @@ const boardsSchema = mongoose.Schema({
         required: true,
     },
     createDate: {
-        type: Date,
+        type: String,
         required: true,
     },
 });
