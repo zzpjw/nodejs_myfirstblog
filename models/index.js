@@ -5,10 +5,10 @@ const connect = () => {
     //mongoose를 통해서 mongodb 연결, undefined가 뜬다면 무시함.
 
     //******************************************몽고DB 아이디 패스워드****************************************
-    // const mongoId = process.env.MONGO_ID
-    // const mongoPw = process.env.MONGO_PW
-    // ${mongoId}:${mongoPw}@
-    mongoose.connect("mongodb://localhost:27017/blogTest", { ignoreUndefined: true }).catch((err) => {
+    const mongoId = process.env.MONGO_ID
+    const mongoPw = process.env.MONGO_PW
+    // console.log(mongoId, mongoPw);
+    mongoose.connect(`mongodb://${mongoId}:${mongoPw}@localhost:27017/blogTest?authSource=admin&authMechanism=SCRAM-SHA-1`, { ignoreUndefined: true }).catch((err) => {
         console.log(err);
     });
 };
