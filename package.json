@@ -7,6 +7,8 @@
     "ejs": "^3.1.6",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "mongoose": "^6.2.7",
     "swagger-autogen": "^2.20.7",
     "swagger-ui-express": "^4.3.0"

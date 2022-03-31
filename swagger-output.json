@@ -37,6 +37,7 @@
         "tags": [
           "User"
         ],
+        "summary": "기본 페이지",
         "description": "기본 페이지",
         "parameters": [],
         "responses": {
@@ -51,6 +52,7 @@
         "tags": [
           "User"
         ],
+        "summary": "회원가입 페이지",
         "description": "회원가입 페이지",
         "parameters": [],
         "responses": {
@@ -63,6 +65,7 @@
         "tags": [
           "User"
         ],
+        "summary": "회원가입 페이지 - 회원가입하기",
         "description": "회원가입 페이지 - 회원가입하기",
         "parameters": [
           {
@@ -99,6 +102,7 @@
         "tags": [
           "User"
         ],
+        "summary": "로그인 페이지",
         "description": "로그인 페이지",
         "parameters": [],
         "responses": {
@@ -111,6 +115,7 @@
         "tags": [
           "User"
         ],
+        "summary": "로그인 페이지 - 로그인하기",
         "description": "로그인 페이지 - 로그인하기",
         "parameters": [
           {
@@ -144,6 +149,7 @@
         "tags": [
           "User"
         ],
+        "summary": "로그인 여부 확인",
         "description": "로그인 여부 확인",
         "parameters": [
           {
@@ -167,6 +173,7 @@
         "tags": [
           "Post"
         ],
+        "summary": "글 목록 페이지(기본)",
         "description": "글 목록 페이지(기본)",
         "parameters": [],
         "responses": {
@@ -181,6 +188,7 @@
         "tags": [
           "Post"
         ],
+        "summary": "글 작성 페이지",
         "description": "글 작성 페이지",
         "parameters": [],
         "responses": {
@@ -193,6 +201,7 @@
         "tags": [
           "Post"
         ],
+        "summary": "글 작성 페이지 - 글 작성하기",
         "description": "글 작성 페이지 - 글 작성하기",
         "parameters": [
           {
@@ -235,6 +244,7 @@
           "Post",
           "Comment"
         ],
+        "summary": "글+댓글 상세 조회 페이지",
         "description": "글+댓글 상세 조회 페이지",
         "parameters": [
           {
@@ -256,6 +266,7 @@
         "tags": [
           "Comment"
         ],
+        "summary": "글+댓글 상세 조회 페이지 - 댓글 쓰기",
         "description": "글+댓글 상세 조회 페이지 - 댓글 쓰기",
         "parameters": [
           {
@@ -300,6 +311,7 @@
         "tags": [
           "Comment"
         ],
+        "summary": "글+댓글 상세 조회 페이지 - 댓글 삭제하기",
         "description": "글+댓글 상세 조회 페이지 - 댓글 삭제하기",
         "parameters": [
           {
@@ -327,6 +339,7 @@
         "tags": [
           "Comment"
         ],
+        "summary": "글+댓글 상세 조회 페이지 - 댓글 수정하기",
         "description": "글+댓글 상세 조회 페이지 - 댓글 수정하기",
         "parameters": [
           {
@@ -368,6 +381,7 @@
         "tags": [
           "Post"
         ],
+        "summary": "글 수정 페이지",
         "description": "글 수정 페이지",
         "parameters": [
           {
@@ -387,6 +401,7 @@
         "tags": [
           "Post"
         ],
+        "summary": "글 수정 페이지 - 글 수정하기",
         "description": "글 수정 페이지 - 글 수정하기",
         "parameters": [
           {
@@ -429,6 +444,7 @@
         "tags": [
           "Post"
         ],
+        "summary": "글 수정 페이지 - 글 삭제하기",
         "description": "글 수정 페이지 - 글 삭제하기",
         "parameters": [
           {

@@ -16,7 +16,6 @@ connect();
 //swagger
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output");
-
 app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 //routers

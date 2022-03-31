@@ -2,28 +2,34 @@ const Boards = require("../models/board");
 const Comments = require("../models/comment")
 const router = require("express").Router();
 const authMiddleware = require("../middlewares/auth-middleware");
+const moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
 
 // req, res 서버의 입장에서 생각!//
 // request 모두 프론트 쪽에서 넘어온 것(유저의 행위는 모두 request)//
 // response 내가 프론트로 넘겨주는 것.//
 
 router.get("/" , async (req, res) => {
-    // #swagger.description = "글 목록 페이지(기본)"
     // #swagger.tags = ["Post"]
+    // #swagger.summary = "글 목록 페이지(기본)"
+    // #swagger.description = "글 목록 페이지(기본)"
     //createDate를 역순으로 정렬해서 최신순 목록 정렬함
     const boardsList = await Boards.find().sort({createDate: -1});
     res.status(200).render('board', {boardsList})
 });
 
 router.get("/posting", async (req, res) => {
-    // #swagger.description = "글 작성 페이지"
     // #swagger.tags = ["Post"]
+    // #swagger.summary = "글 작성 페이지"
+    // #swagger.description = "글 작성 페이지"
     res.status(200).render('posting')
 });
 
 router.post("/posting", authMiddleware, async (req, res) => {
-    // #swagger.description = "글 작성 페이지 - 글 작성하기"
     // #swagger.tags = ["Post"]
+    // #swagger.summary = "글 작성 페이지 - 글 작성하기"
+    // #swagger.description = "글 작성 페이지 - 글 작성하기"
     const {title, content} = req.body;
     const {user} = res.locals;
     if (title === "" || content === "") {
@@ -32,15 +38,13 @@ router.post("/posting", authMiddleware, async (req, res) => {
         });
         return;
     }
-    // ******************************************************************************************
     // console.log(user.nickname);
     //boards 최신순 정렬
     const maxIndexByBoardIdx = await Boards.findOne().sort('-boardIdx').exec();
     //기존 boardIdx 값이 삭제되더라도 겹치는 boardIdx 값이 생기지 않도록. 만약 글이 없다면 1.
     const maxBoardIdx = maxIndexByBoardIdx ? maxIndexByBoardIdx.boardIdx + 1 : 1;
 
-    //************************************업데이트 예정****************************************
-    const date = Date.now()
+    const date = moment().format("YYYY-MM-DD HH:mm:ss")
 
     // console.log("DB로 들어갈 데이터 목록", title, username, hashPassword, salt, content, date, maxBoardIdx)
     // console.log("maxIndexByBoardIdx", maxIndexByBoardIdx)
@@ -57,8 +61,9 @@ router.post("/posting", authMiddleware, async (req, res) => {
 });
 
 router.get("/:boardIdx" , async (req, res) => {
-    // #swagger.description = "글+댓글 상세 조회 페이지"
     // #swagger.tags = ["Post", "Comment"]
+    // #swagger.summary = "글+댓글 상세 조회 페이지"
+    // #swagger.description = "글+댓글 상세 조회 페이지"
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -69,8 +74,9 @@ router.get("/:boardIdx" , async (req, res) => {
 });
 
 router.post("/:boardIdx/comment", authMiddleware , async (req, res) => {
-    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 쓰기"
     // #swagger.tags = ["Comment"]
+    // #swagger.summary = "글+댓글 상세 조회 페이지 - 댓글 쓰기"
+    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 쓰기"
     const {comment} = req.body;
     const {boardIdx} = req.params
     const {user} = res.locals;
@@ -98,8 +104,9 @@ router.post("/:boardIdx/comment", authMiddleware , async (req, res) => {
 });
 
 router.delete("/comment/:commentIdx", authMiddleware , async (req, res) => {
-    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 삭제하기"
     // #swagger.tags = ["Comment"]
+    // #swagger.summary = "글+댓글 상세 조회 페이지 - 댓글 삭제하기"
+    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 삭제하기"
     const {commentIdx} = req.params;
     // console.log("existsBoard 잘 뽑혔나?", existsBoard)
     await Comments.deleteOne({commentIdx: Number(commentIdx)})
@@ -107,8 +114,9 @@ router.delete("/comment/:commentIdx", authMiddleware , async (req, res) => {
 });
 
 router.patch("/comment/:commentIdx", authMiddleware , async (req, res) => {
-    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 수정하기"
     // #swagger.tags = ["Comment"]
+    // #swagger.summary = "글+댓글 상세 조회 페이지 - 댓글 수정하기"
+    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 수정하기"
     const {comment} = req.body
     const {commentIdx} = req.params;
     // console.log("existsBoard 잘 뽑혔나?", existsBoard)
@@ -120,8 +128,9 @@ router.patch("/comment/:commentIdx", authMiddleware , async (req, res) => {
 });
 
 router.get("/:boardIdx/rewrite" , async (req, res) => {
-    // #swagger.description = "글 수정 페이지"
     // #swagger.tags = ["Post"]
+    // #swagger.summary = "글 수정 페이지"
+    // #swagger.description = "글 수정 페이지"
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -130,16 +139,16 @@ router.get("/:boardIdx/rewrite" , async (req, res) => {
 });
 
 router.put("/:boardIdx/rewrite", authMiddleware , async (req, res) => {
-    // #swagger.description = "글 수정 페이지 - 글 수정하기"
     // #swagger.tags = ["Post"]
+    // #swagger.summary = "글 수정 페이지 - 글 수정하기"
+    // #swagger.description = "글 수정 페이지 - 글 수정하기"
     const {title, content} = req.body;
     const {boardIdx} = req.params;
     const [existsBoard] = await Boards.find({boardIdx: Number(boardIdx)})
     const {user} = res.locals;
     // console.log("지금 수정하는거야!", boardIdx)
 
-    //************************************업데이트 예정****************************************
-    const date = Date.now()
+    const date = moment().format("YYYY-MM-DD HH:mm:ss")
 
     //기존 보드에서 가져온 password와 해시화 시킨 req의 비밀번호 비교
     if (existsBoard && existsBoard.username === user.nickname) {
@@ -158,8 +167,9 @@ router.put("/:boardIdx/rewrite", authMiddleware , async (req, res) => {
 });
 
 router.delete("/:boardIdx/rewrite", authMiddleware , async (req, res) => {
-    // #swagger.description = "글 수정 페이지 - 글 삭제하기"
     // #swagger.tags = ["Post"]
+    // #swagger.summary = "글 수정 페이지 - 글 삭제하기"
+    // #swagger.description = "글 수정 페이지 - 글 삭제하기"
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const {user} = res.locals;
