@@ -232,7 +232,8 @@
     "/blog/{boardIdx}": {
       "get": {
         "tags": [
-          "Post"
+          "Post",
+          "Comment"
         ],
         "description": "글+댓글 상세 조회 페이지",
         "parameters": [
@@ -250,7 +251,7 @@
         }
       }
     },
-    "/blog/comment/{boardIdx}": {
+    "/blog/{boardIdx}/comment": {
       "post": {
         "tags": [
           "Comment"

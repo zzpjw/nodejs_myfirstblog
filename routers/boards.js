@@ -58,7 +58,7 @@ router.post("/posting", authMiddleware, async (req, res) => {
 
 router.get("/:boardIdx" , async (req, res) => {
     // #swagger.description = "글+댓글 상세 조회 페이지"
-    // #swagger.tags = ["Post"]
+    // #swagger.tags = ["Post", "Comment"]
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -67,8 +67,8 @@ router.get("/:boardIdx" , async (req, res) => {
     // console.log("comment 잘 뽑혔나?", commentsList)
     res.status(200).render('post', {posting, commentsList})
 });
-//****************TODO path RESTful하게 수정하기
-router.post("/comment/:boardIdx", authMiddleware , async (req, res) => {
+
+router.post("/:boardIdx/comment", authMiddleware , async (req, res) => {
     // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 쓰기"
     // #swagger.tags = ["Comment"]
     const {comment} = req.body;
