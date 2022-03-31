@@ -64,19 +64,29 @@
 
     </style>
  <script>
-     let user;
-     getSelf(function (u) {
-         user = u;
-     });
+     $(document).ready(function(){
+         $('.isUser').hide();
+         $('.isNotUser').show();
+
+
+         if (localStorage.length !== 0){
+             let user;
+             getSelf(function (u) {
+                 user = u;
+             });
+         }
+     })
 
      function getSelf(callback) {
          $.ajax({
              type: "GET",
-             url: "/users/me",
+             url: "/login/users/me",
              headers: {
                  authorization: `Bearer ${localStorage.getItem("token")}`,
              },
              success: function (response) {
+                 $('.isUser').show();
+                 $('.isNotUser').hide();
                  callback(response.user);
              },
              error: function (xhr, status, error) {
@@ -86,14 +96,14 @@
                      localStorage.clear();
                      alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
                  }
-                 window.location.href = "/";
+                 window.location.href = "/login/basic";
              },
          });
      }
 
      function signOut() {
          localStorage.clear();
-         window.location.href = "/";
+         window.location.href = "/blog";
      }
 
  </script>
@@ -105,8 +115,9 @@
 </div>
 <div class="mybox">
     <div class="mybucket">
-        <button type="button" class="btn btn-outline-primary" onclick="window.location.href = '/blog/posting'">글쓰기</button>
-        <button type="button" class="btn btn-outline-danger" onclick="signOut()">로그아웃</button>
+        <button type="button" class="btn btn-outline-primary isUser" onclick="window.location.href = '/blog/posting'">글쓰기</button>
+        <button type="button" class="btn btn-outline-danger isUser" onclick="signOut()">로그아웃</button>
+        <button type="button" class="btn btn-outline-primary isNotUser" onclick="window.location.href = '/login/auth'">로그인</button>
     </div>
 </div>
 <div class="mybox">

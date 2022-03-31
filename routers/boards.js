@@ -30,7 +30,7 @@ router.post("/posting", authMiddleware, async (req, res) => {
         return;
     }
     // ******************************************************************************************
-    console.log(user.nickname);
+    // console.log(user.nickname);
     //boards 최신순 정렬
     const maxIndexByBoardIdx = await Boards.findOne().sort('-boardIdx').exec();
     //기존 boardIdx 값이 삭제되더라도 겹치는 boardIdx 값이 생기지 않도록. 만약 글이 없다면 1.

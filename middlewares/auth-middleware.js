@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        const { userId } = jwt.verify(tokenValue, "my-secret-key");
+        const { userId } = jwt.verify(tokenValue, process.env.SECRET_KEY);
         User.findById(userId).exec().then((user) => {
             // if (!user){
             //     res.status(401).send({

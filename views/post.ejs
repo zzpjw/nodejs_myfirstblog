@@ -62,19 +62,42 @@
 
     </style>
     <script>
-        let user;
-        getSelf(function (u) {
-            user = u;
-        });
+        $(document).ready(function(){
+            $('.isUser').hide();
+            $('.isMyPost').hide();
+
+            <% for (i = 0; i < commentsList.length; i++ ){ %>
+            $('.isMyComment<%= commentsList[i].commentIdx %>').hide();
+            <% } %>
+
+            if (localStorage.length !== 0){
+                let user;
+                getSelf(function (u) {
+                    user = u;
+                    <!--alert(u.nickname + "<%#= posting.username %>")-->
+                    if (u.nickname === "<%= posting.username %>") {
+                        $('.isMyPost').show();
+                    }
+                    // u.username
+                    <% for (i = 0; i < commentsList.length; i++ ){ %>
+                    if (u.nickname === "<%= commentsList[i].username %>") {
+                        $('.isMyComment<%= commentsList[i].commentIdx %>').show();
+                    }
+                    <% } %>
+                });
+            }
+        })
 
         function getSelf(callback) {
             $.ajax({
                 type: "GET",
-                url: "/users/me",
+                url: "/login/users/me",
                 headers: {
                     authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 success: function (response) {
+                    // alert(localStorage.getItem("token"))
+
                     callback(response.user);
                 },
                 error: function (xhr, status, error) {
@@ -84,14 +107,13 @@
                         localStorage.clear();
                         alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
                     }
-                    window.location.href = "/";
+                    window.location.href = "/login/basic";
                 },
             });
         }
 
         function writeComment() {
             const comment_give = $('#comment').val();
-            console.log(comment_give)
 
             $.ajax({
                 type: "POST",
@@ -103,7 +125,6 @@
                     'comment': comment_give,
                 },
                 success: function (response) {
-                    console.log(response);
                     location.href = location.href
                 },
                 error: function (error) {
@@ -116,63 +137,9 @@
         function loginCheck() {
             if (!localStorage.getItem("token")) {
                 alert("로그인이 필요한 기능입니다.")
-                location.href = "/login"
+                location.href = "/login/auth"
             }
         }
-
-
-        // function modifyCommentShow(commentId) {
-        //     $(`#comment${commentId}`).hide()
-        //     $(`#commentIcon${commentId}`).hide()
-        //
-        //     $(`#commentDiv${commentId}`).show()
-        //
-        //     const commentText = $(`#comment${commentId}`).text().trim();
-        //     $(`#commentInput${commentId}`).val(commentText)
-        // }
-        //
-        // function modifyCommentHide(commentId) {
-        //     $(`#comment${commentId}`).show()
-        //     $(`#commentIcon${commentId}`).show()
-        //
-        //     $(`#commentDiv${commentId}`).hide()
-        // }
-
-        // // 댓글을 UI에 그려주는 함수
-        // function makeComment(commentObject, tokenUserId) {
-        //     const {commentId, nickname, comment, userId} = commentObject;
-        //     // 접속한 userId와 댓글 userId가 같을 경우
-        //     if (userId == tokenUserId) {
-        //         const temp_html = `
-        //     <tr id="commentBody${commentId}">
-        //         <td scope="col">${nickname}</td>
-        //         <td scope="col" id="comment${commentId}">${comment}
-        //         </td>
-        //         <td id="commentIcon${commentId}">
-        //             <i class="fa fa-pencil" aria-hidden="true" onclick="modifyCommentShow(${commentId})"></i>
-        //             <i class="fa fa-times" aria-hidden="true" onclick="deleteComment(${commentId})"></i>
-        //         </td>
-        //
-        //         <td colspan="2">
-        //         <div id="commentDiv${commentId}" class="input-group mb-3" style="display: none">
-        //           <input id="commentInput${commentId}" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-        //           <div class="input-group-append">
-        //             <button class="btn btn-outline-secondary" type="button" onclick="modifyComment(${commentId})">저장</button>
-        //           </div>
-        //         </div>
-        //         </td>
-        //     </tr>`
-        //         $('#commentTableBody').append(temp_html)
-        //
-        //     } else { // 접속한 userId와 댓글 userId가 다를 경우
-        //         const temp_html = `<tr>
-        //         <td scope="col">${nickname}</td>
-        //         <td scope="col">${comment}</td>
-        //         <td></td>
-        //     </tr>`
-        //         $('#commentTableBody').append(temp_html)
-        //     }
-        // }
 
         //댓글 삭제 성공
         function deleteComment(commentIdx) {
@@ -192,11 +159,18 @@
                 });
             }
         }
+        function modifyCommentShow(commentIdx){
+            $(`.isUser${commentIdx}`).show();
+            $(`.hideButton`).hide();
+            $(`.hideComment${commentIdx}`).hide();
 
+
+        }
         //댓글 수정
         function modifyComment(commentIdx) {
+            $(`#hideComment${commentIdx}`).hide();
 
-            const comment_give = $('#comment').val();
+            const comment_give = $(`#modifyComment${commentIdx}`).val();
             if (!comment_give) {
                 alert("댓글 내용이 존재하지 않습니다.")
                 return;
@@ -237,7 +211,7 @@
 </div>
 <div class="mybox">
     <div class="mybucket">
-        <button type="button" class="btn btn-outline-primary" onclick="window.location.href = '/blog/<%= posting.boardIdx %>/rewrite'">수정하기</button>
+        <button type="button" class="btn btn-outline-primary isMyPost" onclick="window.location.href = '/blog/<%= posting.boardIdx %>/rewrite'">수정하기</button>
     </div>
 </div>
 <div class="mybox">
@@ -245,14 +219,19 @@
         <tbody>
         <% for (i = 0; i < commentsList.length; i++ ){ %>
             <tr>
-                <td class="align-baseline"><%= commentsList[i].username %></td>
-                <td class="align-baseline"><%= commentsList[i].comment %></td>
+                <td class="align-baseline" id="hideComment<%= commentsList[i].username %>"><%= commentsList[i].username %></td>
+                <td class="align-baseline hideComment<%= commentsList[i].commentIdx %>"><%= commentsList[i].comment %></td>
+                <td class="isUser isUser<%= commentsList[i].commentIdx %>"><input class="form-control" id="modifyComment<%= commentsList[i].commentIdx %>" type="text" aria-label="default input example" placeholder="<%= commentsList[i].comment %>"></td>
                 <td class="icon has-icons-right is-right">
-                <%# if (user) ******************************************************************************************************%>
-                    <span class="has-icons-right" id="basic-addon2">
-                        <i class="fa fa-pencil" aria-hidden="true" onclick="modifyComment(<%= commentsList[i].commentIdx %>)"></i>
-                        <i class="fa fa-times" aria-hidden="true" onclick="deleteComment(<%= commentsList[i].commentIdx %>)"></i>
-                    </span>
+
+                    <div class="isMyComment<%= commentsList[i].commentIdx %>">
+                        <span class="has-icons-right" id="basic-addon2">
+                            <i class="fa fa-pencil hideButton" aria-hidden="true" onclick="modifyCommentShow(<%= commentsList[i].commentIdx %>)"></i>
+                            <i class="fa fa-pencil isUser isUser<%= commentsList[i].commentIdx %>" aria-hidden="true" onclick="modifyComment(<%= commentsList[i].commentIdx %>)"></i>
+                            <i class="fa fa-times hideButton" aria-hidden="true" onclick="deleteComment(<%= commentsList[i].commentIdx %>)"></i>
+                        </span>
+                    </div>
+
                 </td>
             </tr>
         <% } %>
