@@ -13,6 +13,12 @@ const port = 3000;
 //db연결
 connect();
 
+//swagger
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("./swagger-output");
+
+app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 //routers
 const boardsRouter = require("./routers/boards");
 const usersRouter = require("./routers/users");
@@ -26,7 +32,7 @@ app.set("views", __dirname+ "/views" )
 //default
 app.use(express.json());
 app.use(express.urlencoded({extended : false})); //아악코드 html을 통해서 서버로 넘겨줄 경우때 해석에 필요
-app.use("/login", [usersRouter]);
+app.use("/auth", [usersRouter]);
 app.use("/blog", [boardsRouter]);
 
 

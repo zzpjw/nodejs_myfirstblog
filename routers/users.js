@@ -26,19 +26,21 @@ const createHashedPassword = (plainPassword) =>
         });
     });
 
-//기본 페이지
 router.get("/basic", async (req, res) => {
+    // #swagger.description = "기본 페이지"
+    // #swagger.tags = ["User"]
     res.status(200).render('index', )
 });
 
-
-//회원가입 페이지
 router.get("/register", async (req, res) => {
+    // #swagger.description = "회원가입 페이지"
+    // #swagger.tags = ["User"]
     res.status(200).render('register', )
 });
 
-//회원가입
 router.post("/register", async (req, res) => {
+    // #swagger.description = "회원가입 페이지 - 회원가입하기"
+    // #swagger.tags = ["User"]
     const {nickname, password, confirmPassword} = req.body;
     //아이디 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자 사용 가능 3~20자리
     const regExp_nickname = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$/;
@@ -94,13 +96,15 @@ router.post("/register", async (req, res) => {
     res.status(201).send({});
 })
 
-//로그인 페이지
-router.get("/auth", async (req, res) => {
+router.get("/login", async (req, res) => {
+    // #swagger.description = "로그인 페이지"
+    // #swagger.tags = ["User"]
     res.status(200).render('login', )
 });
 
-//로그인
-router.post("/auth", async (req, res) => {
+router.post("/login", async (req, res) => {
+    // #swagger.description = "로그인 페이지 - 로그인하기"
+    // #swagger.tags = ["User"]
     const { nickname, password } = req.body;
     //닉네임 입력하지 않았을 때
     if (nickname === "") {
@@ -158,6 +162,8 @@ router.post("/auth", async (req, res) => {
 
 //핸들러 앞에 authMiddleware를 붙이지 않으면 문제가 발생함.
 router.get("/users/me", authMiddleware, async (req, res) => {
+    // #swagger.description = "로그인 여부 확인"
+    // #swagger.tags = ["User"]
     const {user} = res.locals;
     // console.log(user);
     res.send({

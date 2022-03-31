@@ -79,7 +79,7 @@
             let password = $("#inputPassword").val();
             $.ajax({
                 type: "POST",
-                url: "/login/auth",
+                url: "/auth/login",
                 data: {
                     nickname: nickname,
                     password: password,
@@ -99,7 +99,7 @@
 <body>
 
 <div class="mypic">
-    <h1 onclick="window.location.href = '/login/basic'">나의 블로그</h1>
+    <h1 onclick="window.location.href = '/auth/basic'">나의 블로그</h1>
 
     <div class="mybox">
         <div class="field">
@@ -117,7 +117,7 @@
             </p>
         </div>
         <button class="button is-info" onclick="sign_in()">로그인</button>
-        <button class="button is-info" onclick="window.location.href = '/login/basic'">취소</button>
+        <button class="button is-info" onclick="window.location.href = '/auth/basic'">취소</button>
     </div>
 
 </div>
