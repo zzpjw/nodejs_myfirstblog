@@ -91,7 +91,7 @@
         function getSelf(callback) {
             $.ajax({
                 type: "GET",
-                url: "/login/users/me",
+                url: "/auth/users/me",
                 headers: {
                     authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
@@ -107,7 +107,7 @@
                         localStorage.clear();
                         alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
                     }
-                    window.location.href = "/login/basic";
+                    window.location.href = "/auth/basic";
                 },
             });
         }
@@ -117,7 +117,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/blog/comment/<%= posting.boardIdx %>",
+                url: "/blog/<%= posting.boardIdx %>/comment",
                 headers: {
                     authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
@@ -137,7 +137,7 @@
         function loginCheck() {
             if (!localStorage.getItem("token")) {
                 alert("로그인이 필요한 기능입니다.")
-                location.href = "/login/auth"
+                location.href = "/auth/login"
             }
         }
 
@@ -221,7 +221,9 @@
             <tr>
                 <td class="align-baseline" id="hideComment<%= commentsList[i].username %>"><%= commentsList[i].username %></td>
                 <td class="align-baseline hideComment<%= commentsList[i].commentIdx %>"><%= commentsList[i].comment %></td>
-                <td class="isUser isUser<%= commentsList[i].commentIdx %>"><input class="form-control" id="modifyComment<%= commentsList[i].commentIdx %>" type="text" aria-label="default input example" placeholder="<%= commentsList[i].comment %>"></td>
+                <td class="isUser isUser<%= commentsList[i].commentIdx %>">
+                    <input class="form-control" id="modifyComment<%= commentsList[i].commentIdx %>" type="text" aria-label="default input example" value="<%= commentsList[i].comment %>">
+                </td>
                 <td class="icon has-icons-right is-right">
 
                     <div class="isMyComment<%= commentsList[i].commentIdx %>">

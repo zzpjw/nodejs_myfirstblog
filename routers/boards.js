@@ -7,20 +7,23 @@ const authMiddleware = require("../middlewares/auth-middleware");
 // request 모두 프론트 쪽에서 넘어온 것(유저의 행위는 모두 request)//
 // response 내가 프론트로 넘겨주는 것.//
 
-//글 목록 페이지(기본)
 router.get("/" , async (req, res) => {
+    // #swagger.description = "글 목록 페이지(기본)"
+    // #swagger.tags = ["Post"]
     //createDate를 역순으로 정렬해서 최신순 목록 정렬함
     const boardsList = await Boards.find().sort({createDate: -1});
     res.status(200).render('board', {boardsList})
 });
 
-//글 작성 페이지
 router.get("/posting", async (req, res) => {
+    // #swagger.description = "글 작성 페이지"
+    // #swagger.tags = ["Post"]
     res.status(200).render('posting')
 });
 
-//글 작성
 router.post("/posting", authMiddleware, async (req, res) => {
+    // #swagger.description = "글 작성 페이지 - 글 작성하기"
+    // #swagger.tags = ["Post"]
     const {title, content} = req.body;
     const {user} = res.locals;
     if (title === "" || content === "") {
@@ -53,8 +56,9 @@ router.post("/posting", authMiddleware, async (req, res) => {
     res.status(201).json({result: "success"})
 });
 
-//글+댓글 상세 조회 페이지
 router.get("/:boardIdx" , async (req, res) => {
+    // #swagger.description = "글+댓글 상세 조회 페이지"
+    // #swagger.tags = ["Post", "Comment"]
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -64,8 +68,9 @@ router.get("/:boardIdx" , async (req, res) => {
     res.status(200).render('post', {posting, commentsList})
 });
 
-//글 상세 조회 페이지 - 댓글쓰기
-router.post("/comment/:boardIdx", authMiddleware , async (req, res) => {
+router.post("/:boardIdx/comment", authMiddleware , async (req, res) => {
+    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 쓰기"
+    // #swagger.tags = ["Comment"]
     const {comment} = req.body;
     const {boardIdx} = req.params
     const {user} = res.locals;
@@ -92,17 +97,18 @@ router.post("/comment/:boardIdx", authMiddleware , async (req, res) => {
     res.status(201).json({result: "success"})
 });
 
-
-//글 상세 조회 페이지 - 댓글 삭제하기
 router.delete("/comment/:commentIdx", authMiddleware , async (req, res) => {
+    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 삭제하기"
+    // #swagger.tags = ["Comment"]
     const {commentIdx} = req.params;
     // console.log("existsBoard 잘 뽑혔나?", existsBoard)
     await Comments.deleteOne({commentIdx: Number(commentIdx)})
     res.json({success: true});
 });
 
-//글 상세 조회 페이지 - 댓글 수정하기
 router.patch("/comment/:commentIdx", authMiddleware , async (req, res) => {
+    // #swagger.description = "글+댓글 상세 조회 페이지 - 댓글 수정하기"
+    // #swagger.tags = ["Comment"]
     const {comment} = req.body
     const {commentIdx} = req.params;
     // console.log("existsBoard 잘 뽑혔나?", existsBoard)
@@ -113,9 +119,9 @@ router.patch("/comment/:commentIdx", authMiddleware , async (req, res) => {
     res.status(200).json({result: "success"});
 });
 
-
-//수정하기 페이지
 router.get("/:boardIdx/rewrite" , async (req, res) => {
+    // #swagger.description = "글 수정 페이지"
+    // #swagger.tags = ["Post"]
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const [posting] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -123,8 +129,9 @@ router.get("/:boardIdx/rewrite" , async (req, res) => {
     res.status(200).render('rewrite', {posting})
 });
 
-//수정하기
 router.put("/:boardIdx/rewrite", authMiddleware , async (req, res) => {
+    // #swagger.description = "글 수정 페이지 - 글 수정하기"
+    // #swagger.tags = ["Post"]
     const {title, content} = req.body;
     const {boardIdx} = req.params;
     const [existsBoard] = await Boards.find({boardIdx: Number(boardIdx)})
@@ -150,8 +157,9 @@ router.put("/:boardIdx/rewrite", authMiddleware , async (req, res) => {
     res.status(200).json({result: "success"})
 });
 
-//삭제하기
 router.delete("/:boardIdx/rewrite", authMiddleware , async (req, res) => {
+    // #swagger.description = "글 수정 페이지 - 글 삭제하기"
+    // #swagger.tags = ["Post"]
     const {boardIdx} = req.params;
     // console.log("보드 인덱스는 잘 뽑혔나?", boardIdx)
     const {user} = res.locals;
