@@ -43,7 +43,7 @@ router.get("/register", async (req, res) => {
 router.post("/register", async (req, res) => {
     // #swagger.tags = ["User"]
     // #swagger.summary = "회원가입 페이지 - 회원가입하기"
-    // #swagger.description = "회원가입 페이지 - 회원가입하기"
+    // #swagger.description = "아이디는 숫자와 영문을 필수로 포함한 3~20자리/비밀번호는 숫자와 영문을 필수로 포함하고 특수문자를 사용 가능한 4~20자리"
     const {nickname, password, confirmPassword} = req.body;
     //아이디 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자 사용 가능 3~20자리
     const regExp_nickname = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$/;
