@@ -12,8 +12,6 @@ const cors = require('cors');
 
 const app = express();
 const port = 3000;
-//CORS 실행
-app.use(cors());
 
 //db연결
 connect();
@@ -22,6 +20,9 @@ connect();
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output");
 app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+//CORS 실행
+app.use(cors());
 
 //routers
 const boardsRouter = require("./routers/boards");
