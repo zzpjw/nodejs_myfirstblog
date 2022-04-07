@@ -4,6 +4,9 @@ require('dotenv').config();
 const express = require("express");
 const connect = require("./models");
 
+//CORS
+const cors = require('cors');
+
 // //xss security Import 라이브러리? 사용을 해야하는가? 예외처리 방식이 복잡.. 이해가 필요할듯
 // const helmet = require("helmet");
 
@@ -17,6 +20,9 @@ connect();
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output");
 app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+//CORS 실행
+app.use(cors());
 
 //routers
 const boardsRouter = require("./routers/boards");
