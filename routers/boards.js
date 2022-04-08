@@ -110,7 +110,7 @@ router.delete("/comment/:commentIdx", authMiddleware , async (req, res) => {
     const {commentIdx} = req.params;
     // console.log("existsBoard 잘 뽑혔나?", existsBoard)
     await Comments.deleteOne({commentIdx: Number(commentIdx)})
-    res.json({success: true});
+    res.status(200).json({success: true});
 });
 
 router.patch("/comment/:commentIdx", authMiddleware , async (req, res) => {
@@ -179,7 +179,7 @@ router.delete("/:boardIdx/rewrite", authMiddleware , async (req, res) => {
         await Boards.deleteOne({boardIdx: Number(boardIdx)})
         await Comments.deleteMany({boardIdx: Number(boardIdx)})
     }
-    res.json({success: true});
+    res.status(200).json({success: true});
 });
 
 module.exports = router;

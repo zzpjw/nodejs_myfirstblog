@@ -33,14 +33,14 @@ router.get("/basic", async (req, res) => {
     res.status(200).render('index', )
 });
 
-router.get("/register", async (req, res) => {
+router.get("/users", async (req, res) => {
     // #swagger.tags = ["User"]
     // #swagger.summary = "회원가입 페이지"
     // #swagger.description = "회원가입 페이지"
     res.status(200).render('register', )
 });
 
-router.post("/register", async (req, res) => {
+router.post("/users", async (req, res) => {
     // #swagger.tags = ["User"]
     // #swagger.summary = "회원가입 페이지 - 회원가입하기"
     // #swagger.description = "아이디는 숫자와 영문을 필수로 포함한 3~20자리/비밀번호는 숫자와 영문을 필수로 포함하고 특수문자를 사용 가능한 4~20자리"
@@ -98,6 +98,42 @@ router.post("/register", async (req, res) => {
 
     res.status(201).send({});
 })
+
+//핸들러 앞에 authMiddleware를 붙이지 않으면 문제가 발생함.
+router.get("/users/me", authMiddleware, async (req, res) => {
+    // #swagger.tags = ["User"]
+    // #swagger.summary = "본인 확인"
+    // #swagger.description = "본인 확인"
+    const {user} = res.locals;
+    // console.log(user);
+    res.send({
+        user: {  //원래는 이게 맞음. password를 보내주면 안됨
+            // email: user.email,
+            nickname: user.nickname,
+        },
+    });
+});
+
+// router.put("/users/me", authMiddleware, async (req, res) => {
+//     // #swagger.tags = ["User"]
+//     // #swagger.summary = "회원 정보 수정"
+//     // #swagger.description = "회원 정보 수정"
+//     const {user} = res.locals;
+//     // console.log(user);
+//     res.send({
+//
+//     });
+// });
+
+// router.delete("/users/me", authMiddleware, async (req, res) => {
+//     // #swagger.tags = ["User"]
+//     // #swagger.summary = "회원 정보 삭제"
+//     // #swagger.description = "회원 정보 삭제"
+//     const {user} = res.locals;
+//     // console.log(user);
+//     res.send({
+//     });
+// });
 
 router.get("/login", async (req, res) => {
     // #swagger.tags = ["User"]
@@ -160,24 +196,10 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign({ userId: user.userId }, process.env.SECRET_KEY);
     // console.log(token)
-    res.send({
+    res.status(201).send({
         token,
     });
 });
 
-//핸들러 앞에 authMiddleware를 붙이지 않으면 문제가 발생함.
-router.get("/users/me", authMiddleware, async (req, res) => {
-    // #swagger.tags = ["User"]
-    // #swagger.summary = "로그인 여부 확인"
-    // #swagger.description = "로그인 여부 확인"
-    const {user} = res.locals;
-    // console.log(user);
-    res.send({
-        user: {  //원래는 이게 맞음. password를 보내주면 안됨
-            // email: user.email,
-            nickname: user.nickname,
-        },
-    });
-});
 
 module.exports = router;
