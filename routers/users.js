@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const authMiddleware = require("../middlewares/auth-middleware");
-const Users = require("../models/user");
+const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 
 //password hashing module
@@ -14,7 +14,6 @@ const createSalt = () =>
             resolve(buf.toString('base64'));
         });
     });
-
 
 //salt를 사용해서 입력된 password를 해시화하는 함수
 const createHashedPassword = (plainPassword) =>
@@ -53,6 +52,18 @@ router.post("/users", async (req, res) => {
         });
         return;
     }
+    //nickname 중복 확인
+    const existUsers = await User.findOne({
+        where: {
+            nickname,
+        }
+    });
+    if (existUsers !== null) {
+        res.status(400).send({
+            errorMessage: '이미 가입된 닉네임이 있습니다.',
+        });
+        return;
+    }
     // 패스워드 정규표현식 숫자, 영문 대소문자 필수 포함, 숫자와 영문 대소문자와 특수문자 사용 가능 4~20자리
     const regExp_password = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{4,20}$/;//()안에 내용은 필수 포함//'\d'는 숫자를 의미함//
     if (!regExp_password.test(password)) {
@@ -67,16 +78,6 @@ router.post("/users", async (req, res) => {
         });
         return;
     }
-    //nickname 중복 확인
-    const existUsers = await Users.find({
-        nickname,
-    });
-    if (existUsers.length) {
-        res.status(400).send({
-            errorMessage: '이미 가입된 닉네임이 있습니다.',
-        });
-        return;
-    }
     //패스워드 확인
     if (password !== confirmPassword) {
         res.status(400).send({
@@ -88,14 +89,11 @@ router.post("/users", async (req, res) => {
     const {hashPassword, salt} = await createHashedPassword(password);
     // console.log("hashPassword, salt", hashPassword, salt)
     //새로운 user 객체 만들기
-    const user = new Users({
+    await User.create({
         nickname,
         password: hashPassword,
         salt,
     });
-    // console.log("user", user)
-    await user.save();
-
     res.status(201).send({});
 })
 
@@ -161,7 +159,11 @@ router.post("/login", async (req, res) => {
         });
         return;
     }
-    const [existsUser] = await Users.find({nickname})
+    const existsUser = await User.findOne({
+        where:{
+            nickname
+        }
+    });
     // console.log([existsUser])
     if (existsUser === undefined) {
         res.status(400).send({
@@ -184,7 +186,11 @@ router.post("/login", async (req, res) => {
     //해시화 함수 사용
     const hashPassword = await makePasswordHashed(nickname, password);
     // console.log(password, hashPassword)
-    const user = await Users.findOne({ nickname, password: hashPassword }).exec();
+    const user = await User.findOne({ 
+        where: {
+            nickname, password: hashPassword 
+        }
+    });
     // console.log(user)
     if (!user) {
         res.status(400).send({
@@ -200,6 +206,5 @@ router.post("/login", async (req, res) => {
         token,
     });
 });
-
 
 module.exports = router;

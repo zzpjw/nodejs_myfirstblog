@@ -2,7 +2,6 @@
 require('dotenv').config();
 //Imports
 const express = require("express");
-const connect = require("./models");
 
 //CORS
 const cors = require('cors');
@@ -12,9 +11,6 @@ const cors = require('cors');
 
 const app = express();
 const port = 3000;
-
-//db연결
-connect();
 
 //swagger
 const swaggerUi = require("swagger-ui-express");

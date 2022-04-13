@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const { User } = require("../models");
 
 //jwt 토큰 모듈 미들웨어
 module.exports = (req, res, next) => {
@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
     //String을 배열로 만들어서 Bearer와 token을 분리
     const [tokenType, tokenValue] = authorization.split(' ');
     // console.log(tokenType, tokenValue)
-    if (tokenType !== 'Bearer') {
+    if (!tokenValue || tokenType !== 'Bearer') {
         res.status(401).send({
             errorMessage: '로그인 후 사용하세요',
         });
@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
 
     try {
         const { userId } = jwt.verify(tokenValue, process.env.SECRET_KEY);
-        User.findById(userId).exec().then((user) => {
+        User.findByPk(userId).then((user) => {
             // if (!user){
             //     res.status(401).send({
             //         errorMessage: '로그인 후 사용하세요',
